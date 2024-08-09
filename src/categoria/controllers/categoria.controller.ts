@@ -1,6 +1,7 @@
-import { Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Body, Delete } from "@nestjs/common";
+import { Controller, Get, HttpCode, HttpStatus, Param, ParseIntPipe, Post, Body, Delete, UseGuards } from "@nestjs/common";
 import { Categoria } from "../entities/categoria.entity";
 import { CategoriaService } from "../services/categoria.services";
+import { JwtAuthGuard } from "../../auth/guard/jwt-auth.guard";
 
 @Controller('/categorias')
 export class CategoriaController {
@@ -25,18 +26,21 @@ export class CategoriaController {
         return this.categoriaService.findByTipo(tipo);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Post()
     @HttpCode(HttpStatus.CREATED)
     create(@Body() categoria:Categoria):Promise<Categoria>{
         return this.categoriaService.create(categoria);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Post()
     @HttpCode(HttpStatus.OK)
     update(@Body() categoria:Categoria):Promise<Categoria>{
         return this.categoriaService.update(categoria);
     }
 
+    @UseGuards(JwtAuthGuard)
     @Delete('/:id')
     @HttpCode(HttpStatus.NO_CONTENT)
     delete(@Param('id',ParseIntPipe) id:number){
